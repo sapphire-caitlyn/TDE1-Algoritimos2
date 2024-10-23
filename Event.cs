@@ -18,7 +18,7 @@ namespace TDE_1 {
         public double Price { get; set; }
         public long UserId { get; set; }
         public string UserSession { get; set; }
-        
+        public bool Excluido { get; set; } = false;
         public void Pad() {
             EventTime    = EventTime   .PadRight(StringSizes.EventTime_STRING_SIZE);
             CategoryId   = CategoryId  .PadRight(StringSizes.CategoryId_STRING_SIZE);
@@ -37,7 +37,10 @@ namespace TDE_1 {
                                           sizeof(double) +
                                           sizeof(long) +
                                           StringSizes.UserSession_STRING_SIZE +
+                                          sizeof(bool) +
                                           1;
+
+        public static readonly int ExcluidoPosition = Size - 1 - sizeof(bool);
 
         public override string ToString() {
             return "EVENT START -> " +
@@ -51,6 +54,7 @@ namespace TDE_1 {
                    Price        + '\n' +
                    UserId       + '\n' +
                    UserSession  + '\n' +
+                   Excluido     + '\n' +
                    "EVENT END \n";
         }
     }

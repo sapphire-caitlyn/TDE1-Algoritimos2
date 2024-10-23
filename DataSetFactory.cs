@@ -17,6 +17,7 @@ namespace TDE_1 {
         public static readonly string PATH_PRODUCT_OUTPUT_FILE = Path.Combine(Directory.GetCurrentDirectory(), "ProductOutput.bin");
     }
     
+    //[ 2.1 - 1 ]
     public class DataSetFactory {
         
         StreamReader srFile1 = new(Paths.PATH_INPUT_FILE_1);
@@ -26,7 +27,9 @@ namespace TDE_1 {
 
         public long EventIndex   = 0;
 
-        public DataSetFactory() {
+        public DataSetFactory() { }
+
+        public void CreateDataSet() {
             string log = "Creating data set!";
             Console.WriteLine(log);
             Console.WriteLine($"Processing File -> {Paths.PATH_INPUT_FILE_1}");
@@ -144,6 +147,8 @@ namespace TDE_1 {
             fs.Write(bufferUserId);
             byte[] bufferUserSession  = Encoding.ASCII.GetBytes(mEvent.UserSession);
             fs.Write(bufferUserSession);
+            byte[] bufferExcluido     = BitConverter.GetBytes(mEvent.Excluido);
+            fs.Write(bufferExcluido);
 
             fs.Write(Encoding.ASCII.GetBytes("\n"));
         }
@@ -173,6 +178,8 @@ namespace TDE_1 {
             byte[] bufferUserId       = bytes.Skip(Skip).Take(sizeof(long)).ToArray();    
             Skip += sizeof(long);
             byte[] bufferUserSession  = bytes.Skip(Skip).Take(StringSizes.UserSession_STRING_SIZE).ToArray();
+            Skip += StringSizes.UserSession_STRING_SIZE;
+            byte[] bufferExcluido     = bytes.Skip(Skip).Take(sizeof(bool)).ToArray();
 
             mEvent.id           = BitConverter.ToInt64(bufferid);
             mEvent.EventTime    = Encoding.Default.GetString(bufferEventTime).Trim();
@@ -184,6 +191,8 @@ namespace TDE_1 {
             mEvent.Price        = BitConverter.ToDouble(bufferPrice);
             mEvent.UserId       = BitConverter.ToInt64(bufferUserId);
             mEvent.UserSession  = Encoding.Default.GetString(bufferUserSession).Trim();
+            mEvent.Excluido     = BitConverter.ToBoolean(bufferExcluido);
+
             return mEvent;
         }
         #endregion [ Event ]
@@ -221,8 +230,6 @@ namespace TDE_1 {
             mProduct.Brand        = Encoding.Default.GetString(bufferBrand).Trim();
             return mProduct;
         }
-
-
 
         public static Product GetProduct(this Event mEvent) {
             Product mProduct = new() {
