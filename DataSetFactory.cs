@@ -15,6 +15,7 @@ namespace TDE_1 {
         
         public static readonly string PATH_EVENT_OUTPUT_FILE   = Path.Combine(Directory.GetCurrentDirectory(), "EventOutput.bin");
         public static readonly string PATH_PRODUCT_OUTPUT_FILE = Path.Combine(Directory.GetCurrentDirectory(), "ProductOutput.bin");
+        public static readonly string PATH_EVENT_PARTIAL_INDEX = Path.Combine(Directory.GetCurrentDirectory(), "EventPartialIndex.bin");
     }
     
     //[ 2.1 - 1 ]

@@ -16,11 +16,7 @@ namespace TDE_1 {
     static class Program {
 
         public static void Main(string[] args) {
-            //CreateDataSet();
-
-            //PesquisaProduct(15200565).Log();
-
-            PesquisaEvent(500).Log();
+            PesquisaEventUsingPartialIndex(550).Log();
         }
 
         //[ 2.1 - 3&4 (Product) ]
@@ -33,6 +29,13 @@ namespace TDE_1 {
             FileStream fsEventOutputFile = new(Paths.PATH_EVENT_OUTPUT_FILE, FileMode.Open, FileAccess.Read);
             return Pesquisa.SearchEvent(fsEventOutputFile, id);
         }
+        public static Event? PesquisaEventUsingPartialIndex(long id) {
+            FileStream fsEventFile      = new(Paths.PATH_EVENT_OUTPUT_FILE  , FileMode.Open, FileAccess.Read);
+            FileStream fsEventIndexFile = new(Paths.PATH_EVENT_PARTIAL_INDEX, FileMode.Open, FileAccess.Read);
+            return Pesquisa.SearchEventUsingPartialIndex(fsEventFile, fsEventIndexFile, id);
+        }
+
+
 
         public static void InsertEvent(Event mEvent) {
             FileStream fsEventOutputFile = new(Paths.PATH_EVENT_OUTPUT_FILE, FileMode.Open, FileAccess.Read);

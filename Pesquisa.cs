@@ -40,10 +40,50 @@ namespace TDE_1 {
             }
             return null;
         }
-    
+
+        public static Event? SearchEventUsingPartialIndex(FileStream fsEvent, FileStream fsEventIndex, long idEvent) {
+            EventPartialIndex? mIndex = SearchPartialIndex(fsEventIndex, idEvent);
+            if(mIndex == null) { return null; }
+
+            return SearchEvent(fsEvent, idEvent, mIndex.Position - 100 * Event.Size, mIndex.Position);
+        }
+        private static Event? SearchEvent(FileStream fsEventOutputFile, long idEvent, long low, long high) {
+            long mid = (low + high) / 2;
+
+            while (low <= high) {
+                fsEventOutputFile.Position = mid;
+                Event mEvent = fsEventOutputFile.ReadEvent();
+                long id = mEvent.id;
+
+                if (id == idEvent) { return mEvent; } else
+                if (id  > idEvent) { high = mid - 1; } else
+                if (id  < idEvent) { low = mid + 1; }
+
+                mid = (low + high) / 2;
+            }
+            return null;
+        }
+
+        private static EventPartialIndex? SearchPartialIndex(FileStream fsEventIndex, long idEvent) {
+            long low = 0, high = fsEventIndex.Length / EventPartialIndex.Size, mid = (low + high) / 2;
+
+            while (low <= high) {
+                fsEventIndex.Position = mid * EventPartialIndex.Size;
+                EventPartialIndex mIndex = fsEventIndex.ReadEventIndex();
+                long id = mIndex.id;
+
+                if (id >= idEvent && id <= idEvent + PartialIndexFactory.TotalAdressesPerIndex) { return mIndex;  } else
+                if (id  > idEvent) { high = mid - 1; } else
+                if (id  < idEvent) { low  = mid + 1; }
+
+                mid = (low + high) / 2;
+            }
+            return null;
+        }
+
         //[ 2.1 - 2 ]
         public static void Log(this Event? mEvent) {
-            Console.WriteLine(mEvent == null ? "[ Event é nulo! ]" : mEvent.ToString());
+            Console.WriteLine(mEvent == null ? "[ Event é nulo! ]" : mEvent.Excluido ? "[ Event excluido! ]" : mEvent.ToString());
         }
         //[ 2.1 - 2 ]
         public static void Log(this Product? mProduct) {
