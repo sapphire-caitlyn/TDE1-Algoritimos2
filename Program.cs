@@ -16,7 +16,12 @@ namespace TDE_1 {
     static class Program {
 
         public static void Main(string[] args) {
-            PesquisaEventUsingPartialIndex(550).Log();
+            //new DataSetFactory().CreateDataSet();
+            //PartialIndexFactory.CreateEventPartialIndex();
+            //InsertEvent(new Event() { Brand = "samsung", CategoryCode = "15151", CategoryId = "515151", EventTime = DateTime.Now.ToString(), EventType = EventType.View, Price = 55.5, ProductId = 2121212, UserId = 51515151, UserSession = "55s1d5as5d15df1" });
+            //PesquisaEventUsingPartialIndex(750).Log();
+            //RemoveEvent(750);
+            //PesquisaEventUsingPartialIndex(750).Log();
         }
 
         //[ 2.1 - 3&4 (Product) ]
@@ -38,11 +43,14 @@ namespace TDE_1 {
 
 
         public static void InsertEvent(Event mEvent) {
-            FileStream fsEventOutputFile = new(Paths.PATH_EVENT_OUTPUT_FILE, FileMode.Open, FileAccess.Read);
+            FileStream fsEventOutputFile = new(Paths.PATH_EVENT_OUTPUT_FILE, FileMode.Open, FileAccess.ReadWrite);
             fsEventOutputFile.Position = fsEventOutputFile.Length - Event.Size;
             Event prevEvent = fsEventOutputFile.ReadEvent();
             mEvent.id = prevEvent.id + 1;
             fsEventOutputFile.WriteEvent(mEvent);
+
+            fsEventOutputFile.Close();
+            PartialIndexFactory.CreateEventPartialIndex();
         }
 
         //[ 3 - Inserção/remoção de dados em um dos arquivos de dados, e reconstrução do índice ]
@@ -51,6 +59,7 @@ namespace TDE_1 {
             long Position = id * Event.Size - Event.Size + Event.ExcluidoPosition;
             fsEventOutputFile.Position = Position;
             fsEventOutputFile.Write(BitConverter.GetBytes(true));
+            fsEventOutputFile.Close();
         }
     }
 }

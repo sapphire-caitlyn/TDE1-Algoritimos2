@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TDE_1 {
     public static class Paths{
-        public static readonly string PATH_INPUT_FILE_1 = Path.Combine(Directory.GetCurrentDirectory(), "2019-Oct.csv");
+        public static readonly string PATH_INPUT_FILE_1 = Path.Combine(Directory.GetCurrentDirectory(), "input.csv");
         //public static readonly string PATH_INPUT_FILE_1 = Path.Combine(Directory.GetCurrentDirectory(), "test.csv");
         public static readonly string PATH_INPUT_FILE_2 = Path.Combine(Directory.GetCurrentDirectory(), "2019-Nov.csv");
         
@@ -22,26 +22,21 @@ namespace TDE_1 {
     public class DataSetFactory {
         
         StreamReader srFile1 = new(Paths.PATH_INPUT_FILE_1);
-        StreamReader srFile2 = new(Paths.PATH_INPUT_FILE_2);
+        //StreamReader srFile2 = new(Paths.PATH_INPUT_FILE_2);
         FileStream   fsEventOutputFile   = new(Paths.PATH_EVENT_OUTPUT_FILE  , FileMode.Create, FileAccess.ReadWrite);
         FileStream   fsProductOutputFile = new(Paths.PATH_PRODUCT_OUTPUT_FILE, FileMode.Create, FileAccess.ReadWrite);
 
         public long EventIndex   = 0;
-
-        public DataSetFactory() { }
 
         public void CreateDataSet() {
             string log = "Creating data set!";
             Console.WriteLine(log);
             Console.WriteLine($"Processing File -> {Paths.PATH_INPUT_FILE_1}");
             ProcessFile(srFile1);
-            Console.WriteLine($"Processing File -> {Paths.PATH_INPUT_FILE_2}");
-            ProcessFile(srFile2);
             Console.WriteLine($"Processing Products -> ");
             ProcessProducts();
 
             srFile1.Close();
-            srFile2.Close();
             fsEventOutputFile.Close();
             fsProductOutputFile.Close();
         }

@@ -33,6 +33,8 @@ namespace TDE_1 {
 
                 Write(Position, mEvent, fsEventFile, fsEventPartialIndexFile);
             }
+
+            fsEventPartialIndexFile.Close();
         }
 
         private static void Write(long Position, Event mEvent, FileStream fsEventFile, FileStream fsEventPartialIndexFile) {
