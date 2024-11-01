@@ -21,7 +21,7 @@ namespace TDE_1 {
             //InsertEvent(new Event() { Brand = "samsung", CategoryCode = "15151", CategoryId = "515151", EventTime = DateTime.Now.ToString(), EventType = EventType.View, Price = 55.5, ProductId = 2121212, UserId = 51515151, UserSession = "55s1d5as5d15df1" });
             //PesquisaEventUsingPartialIndex(750).Log();
             //RemoveEvent(750);
-            //PesquisaEventUsingPartialIndex(750).Log();
+            PesquisaEventUsingPartialIndex(750).Log();
         }
 
         //[ 2.1 - 3&4 (Product) ]
@@ -56,9 +56,11 @@ namespace TDE_1 {
         //[ 3 - Inserção/remoção de dados em um dos arquivos de dados, e reconstrução do índice ]
         public static void RemoveEvent(long id) {
             FileStream fsEventOutputFile = new(Paths.PATH_EVENT_OUTPUT_FILE, FileMode.Open, FileAccess.ReadWrite);
-            long Position = id * Event.Size - Event.Size + Event.ExcluidoPosition;
-            fsEventOutputFile.Position = Position;
-            fsEventOutputFile.Write(BitConverter.GetBytes(true));
+            fsEventOutputFile.Position = id * Event.Size;
+            Event mEvent = fsEventOutputFile.ReadEvent();
+            mEvent.Excluido = true;
+            fsEventOutputFile.Position -= Event.Size;
+            fsEventOutputFile.WriteEvent(mEvent);
             fsEventOutputFile.Close();
         }
     }
