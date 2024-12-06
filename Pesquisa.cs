@@ -8,7 +8,7 @@ namespace TDE_1 {
     public static class Pesquisa {
 
         public static Product? SearchProduct(FileStream fsProductOutputFile, long ProductId) {
-            long low = 0, high = fsProductOutputFile.Length / Product.Size, mid = (low + high) / 2;
+            long low = 0, high = (fsProductOutputFile.Length / Product.Size) - 1, mid = (low + high) / 2;
 
             while (low <= high) {
                 fsProductOutputFile.Position = mid * Product.Size;
@@ -25,7 +25,7 @@ namespace TDE_1 {
         }
 
         public static Event? SearchEvent(FileStream fsEventOutputFile, long idEvent) {
-            long low = 0, high = fsEventOutputFile.Length / Event.Size, mid = (low + high) / 2;
+            long low = 0, high = (fsEventOutputFile.Length / Event.Size) - 1, mid = (low + high) / 2;
 
             while (low <= high) {
                 fsEventOutputFile.Position = mid * Event.Size;
@@ -45,13 +45,13 @@ namespace TDE_1 {
             EventPartialIndex? mIndex = SearchPartialIndex(fsEventIndex, idEvent);
             if(mIndex == null) { return null; }
 
-            return SearchEvent(fsEvent, idEvent, mIndex.Position - 100 * Event.Size, mIndex.Position);
+            return SearchEvent(fsEvent, idEvent, (mIndex.Position - 100 * Event.Size) / Event.Size, mIndex.Position / Event.Size);
         }
         private static Event? SearchEvent(FileStream fsEventOutputFile, long idEvent, long low, long high) {
             long mid = (low + high) / 2;
 
             while (low <= high) {
-                fsEventOutputFile.Position = mid;
+                fsEventOutputFile.Position = mid * Event.Size;
                 Event mEvent = fsEventOutputFile.ReadEvent();
                 long id = mEvent.id;
 
@@ -65,16 +65,16 @@ namespace TDE_1 {
         }
 
         private static EventPartialIndex? SearchPartialIndex(FileStream fsEventIndex, long idEvent) {
-            long low = 0, high = fsEventIndex.Length / EventPartialIndex.Size, mid = (low + high) / 2;
+            long low = 0, high = (fsEventIndex.Length / EventPartialIndex.Size) - 1, mid = (low + high) / 2;
 
             while (low <= high) {
                 fsEventIndex.Position = mid * EventPartialIndex.Size;
                 EventPartialIndex mIndex = fsEventIndex.ReadEventIndex();
                 long id = mIndex.id;
 
-                if (id >= idEvent && id <= idEvent + PartialIndexFactory.TotalAdressesPerIndex) { return mIndex;  } else
-                if (id  > idEvent) { high = mid - 1; } else
-                if (id  < idEvent) { low  = mid + 1; }
+                if (id >= idEvent && id <= idEvent + PartialIndexFactory.TotalAdressesPerIndex) { return mIndex; } else
+                if (id > idEvent ) { high = mid - 1; } else
+                if (id < idEvent ) { low  = mid + 1; }
 
                 mid = (low + high) / 2;
             }

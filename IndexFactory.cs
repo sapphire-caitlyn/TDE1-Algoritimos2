@@ -24,7 +24,7 @@ namespace TDE_1 {
                     if(((int)fsEventFile.Length / Event.Size) % TotalAdressesPerIndex == 0) {
                         break;
                     } else {
-                        fsEventFile.Position = (fsEventFile.Length / Event.Size) - 1 * Event.Size - 1;
+                        fsEventFile.Position = ((fsEventFile.Length / Event.Size) - 1) * Event.Size;
                         mEvent = fsEventFile.ReadEvent();
                         Write(Position, mEvent, fsEventFile, fsEventPartialIndexFile);
                         break;
@@ -34,6 +34,7 @@ namespace TDE_1 {
                 Write(Position, mEvent, fsEventFile, fsEventPartialIndexFile);
             }
 
+            fsEventFile.Close();
             fsEventPartialIndexFile.Close();
         }
 
